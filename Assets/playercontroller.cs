@@ -5,26 +5,29 @@ public class playercontroller : MonoBehaviour
 {
 
     public float speed;
-    Rigidbody rb;
+    private Rigidbody rb;
 
-    float xInput;
-    float yInput;
+    private float xInput;
+    private float yInput;
 
-    int score = 0;
+    private int score = 0;
     public int winScore;
 
     public GameObject winText;
+    int countdown;
 
-    private void Update()
-    {
-        if(transform.position.y < -5f)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+    }
+
+    private void Update()
+    {
+        // fell off the map, restart the game
+        if(transform.position.y < -5f)
+        {
+            restartGame();
+        }
     }
 
     private void FixedUpdate()
@@ -37,7 +40,7 @@ public class playercontroller : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-
+        // collision with coins
         if (other.gameObject.tag == "Coin")
         {
             other.gameObject.SetActive(false);
@@ -46,8 +49,22 @@ public class playercontroller : MonoBehaviour
             if (score >= winScore)
             {
                 // gamewin
-                winText.SetActive(true);
+                WinGame();
             }
         }
+    }
+
+    private void WinGame() 
+    {
+        winText.SetActive(true);
+
+
+        Invoke("restartGame", 5f);
+    }
+
+    // for restarting the game
+    private void restartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
